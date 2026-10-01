@@ -14,11 +14,11 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>Firebird Emu</string>
+   <string>Ti Nspire CX CAS Emulator</string>
   </property>
   <property name="windowIcon">
    <iconset resource="resources.qrc">
-    <normaloff>:/icons/resources/org.firebird-emus.firebird-emu.png</normaloff>:/icons/resources/org.firebird-emus.firebird-emu.png</iconset>
+    <normaloff>:/icons/resources/tinspire-emu.png</normaloff>:/icons/resources/tinspire-emu.png</iconset>
   </property>
   <property name="dockOptions">
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks</set>
@@ -626,10 +626,10 @@
   <action name="actionAbout_Firebird">
    <property name="icon">
     <iconset resource="resources.qrc">
-     <normaloff>:/icons/resources/org.firebird-emus.firebird-emu.png</normaloff>:/icons/resources/org.firebird-emus.firebird-emu.png</iconset>
+     <normaloff>:/icons/resources/tinspire-emu.png</normaloff>:/icons/resources/tinspire-emu.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;About Firebird</string>
+    <string>&amp;About</string>
    </property>
   </action>
   <action name="actionAbout_Qt">

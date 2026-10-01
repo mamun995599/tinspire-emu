@@ -66,7 +66,7 @@ ColumnLayout {
     FBLabel {
         Layout.fillWidth: true
         wrapMode: Text.WordWrap
-        text: qsTr("Enable this to access the internal debugger via TCP (telnet/netcat), like for firebird-send.")
+        text: qsTr("Enable this to access the internal debugger via TCP (telnet/netcat).")
         font.pixelSize: TextMetrics.normalSize
     }
 

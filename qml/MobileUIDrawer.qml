@@ -21,12 +21,12 @@ Rectangle {
 
         Image {
             id: logo
-            source: "qrc:/icons/resources/org.firebird-emus.firebird-emu.png"
+            source: "qrc:/icons/resources/tinspire-emu.png"
 
             Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
             Layout.fillWidth: true
             Layout.maximumWidth: parent.width * 0.5
-            Layout.maximumHeight: parent.width * 0.5
+            Layout.maximumHeight: parent.width * 0.7
             fillMode: Image.PreserveAspectFit
             antialiasing: true
             smooth: true
@@ -172,16 +172,12 @@ Rectangle {
 
                 MessageDialog {
                     id: aboutDialog
-                    title: qsTr("About Firebird")
-                    text: qsTr("Authors:<br>
-                               Fabian Vogt (<a href='https://github.com/Vogtinator'>Vogtinator</a>)<br>
-                               Adrien Bertrand (<a href='https://github.com/adriweb'>Adriweb</a>)<br>
-                               Antonio Vasquez (<a href='https://github.com/antoniovazquezblanco'>antoniovazquezblanco</a>)<br>
-                               Lionel Debroux (<a href='https://github.com/debrouxl'>debrouxl</a>)<br>
-                               Denis Avashurov (<a href='https://github.com/denisps'>denisps</a>)<br>
-                               Based on nspire_emu v0.70 by Goplat<br><br>
-                               This work is licensed under the GPLv3.<br>
-                               To view a copy of this license, visit <a href='https://www.gnu.org/licenses/gpl-3.0.html'>https://www.gnu.org/licenses/gpl-3.0.html</a>")
+                    title: qsTr("About")
+                    text: qsTr("<b>Developer</b><br>
+                               Abdullah Al Mamun<br>
+                               Phone: +8801945120109<br>
+                               Email: mamun995599@gmail.com<br>
+                               Address: Siddhirganj- 1428, Narayanganj, Bangladesh.")
                 }
 
                 onClicked: {

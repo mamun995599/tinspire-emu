@@ -20,9 +20,9 @@ ColumnLayout {
         wrapMode: Text.WordWrap
         text: {
             if(!Emu.isMobile())
-                return qsTr("When opening Firebird, the selected Kit will be started. If available, it will resume the emulation from the provided snapshot.")
+                return qsTr("When opening the app, the selected Kit will be started. If available, it will resume the emulation from the provided snapshot.")
             else
-                return qsTr("Choose the Kit selected on startup and after restarting. If the checkbox is active, it will be launched when Firebird starts.")
+                return qsTr("Choose the Kit selected on startup and after restarting. If the checkbox is active, it will be launched when the app starts.")
         }
 
         font.pixelSize: TextMetrics.normalSize
@@ -68,7 +68,7 @@ ColumnLayout {
         wrapMode: Text.WordWrap
         text: {
             if(Qt.platform.os === "android")
-                return qsTr("When closing firebird using the back button, save the current state to the current snapshot. Does not work when firebird is in the background.")
+                return qsTr("When closing the app using the back button, save the current state to the current snapshot. Does not work when the app is in the background.")
             else
                 return qsTr("On Application end, save the current state to the current snapshot.");
         }

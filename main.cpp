@@ -99,8 +99,8 @@ int main(int argc, char **argv)
         app.setFont(QFont(QStringLiteral("Helvetica Neue")));
     #endif
 
-    QCoreApplication::setOrganizationDomain(QStringLiteral("firebird-emus.org"));
-    QCoreApplication::setOrganizationName(QStringLiteral("Firebird Emus"));
+    QCoreApplication::setOrganizationDomain(QStringLiteral("tinspire-emu.local"));
+    QCoreApplication::setOrganizationName(QStringLiteral("TiNspire Emu"));
     QCoreApplication::setApplicationName(QStringLiteral("tinspire-emu"));
 
     // Needed for settings migration
