@@ -1,0 +1,130 @@
+name: Build TiNspire Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            openjdk-17-jdk \
+            git \
+            unzip \
+            wget \
+            build-essential \
+            python3-pip
+
+      - name: Setup Java
+        run: |
+          echo "JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64" >> $GITHUB_ENV
+
+      - name: Setup Android SDK
+        run: |
+          mkdir -p "$HOME/android-sdk/cmdline-tools"
+          cd "$HOME/android-sdk/cmdline-tools"
+
+          wget -q \
+            https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+
+          unzip -q commandlinetools-linux-11076708_latest.zip
+          mv cmdline-tools latest
+
+          echo "ANDROID_SDK_ROOT=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "$HOME/android-sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "$HOME/android-sdk/platform-tools" >> $GITHUB_PATH
+
+      - name: Install Android SDK
+        run: |
+          yes | sdkmanager --licenses || true
+
+          sdkmanager \
+            "platform-tools" \
+            "platforms;android-32" \
+            "build-tools;32.0.0"
+
+      - name: Install NDK r21e
+        run: |
+          cd "$HOME"
+
+          wget -q \
+            https://dl.google.com/android/repository/android-ndk-r21e-linux-x86_64.zip
+
+          unzip -q android-ndk-r21e-linux-x86_64.zip
+
+          echo "ANDROID_NDK_ROOT=$HOME/android-ndk-r21e" >> $GITHUB_ENV
+
+      - name: Install Python aqtinstall
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install aqtinstall
+
+      - name: Install Qt 5.15.2 for Android
+        run: |
+          aqt install-qt \
+            linux \
+            android \
+            5.15.2 \
+            android \
+            -O "$HOME/Qt"
+
+          echo "QT=$HOME/Qt/5.15.2/android" >> $GITHUB_ENV
+          echo "$HOME/Qt/5.15.2/android/bin" >> $GITHUB_PATH
+
+      - name: Check gif-h submodule
+        run: |
+          git submodule update --init --recursive
+
+          if [ ! -f "core/gif-h/gif.h" ]; then
+            echo "gif-h submodule missing, cloning manually..."
+            rm -rf core/gif-h
+            git clone https://github.com/jacobly0/gif-h core/gif-h
+          fi
+
+      - name: Configure with qmake
+        run: |
+          mkdir -p build
+          cd build
+
+          "$QT/bin/qmake" .. \
+            ANDROID_ABIS="arm64-v8a armeabi-v7a"
+
+      - name: Compile
+        run: |
+          cd build
+          make -j"$(nproc)"
+
+      - name: Build APK
+        run: |
+          cd build
+
+          "$QT/bin/androiddeployqt" \
+            --android-platform android-32 \
+            --input android-tinspire-emu-deployment-settings.json \
+            --output android-build \
+            --apk tinspire-emu.apk
+
+      - name: Find APK
+        run: |
+          echo "Searching for APK..."
+          find . -type f -name "*.apk" -print
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: tinspire-emu
+          path: build/tinspire-emu.apk
+          if-no-files-found: error
