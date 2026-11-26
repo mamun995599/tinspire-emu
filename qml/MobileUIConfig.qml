@@ -1,7 +1,5 @@
 import QtQuick 2.7
 import QtQuick.Layouts 1.0
-import QtQuick.Controls 1.4
-import QtQuick.Controls.Styles 1.4
 
 import Firebird.UIComponents 1.0
 
@@ -60,54 +58,59 @@ Item {
         border.width: 1
         clip: true
 
-        TabView {
-            id: tabView
-            anchors.fill: parent
-            anchors.margins: 6
+        // Own tab bar + page loaders (more reliable than a styled TabView)
+        property int currentTab: 0
 
-            property var model: ConfigPagesModel {}
+        ConfigPagesModel { id: pagesModel }
 
-            style: TabViewStyle {
-                frameOverlap: 0
-                tabOverlap: 0
-                tabsAlignment: Qt.AlignHCenter
+        Row {
+            id: tabBar
+            anchors { left: parent.left; right: parent.right; top: parent.top; margins: 6 }
+            height: 42
 
-                frame: Rectangle { color: "transparent" }
-                tabBar: Rectangle {
-                    color: "transparent"
-                }
+            Repeater {
+                model: pagesModel
 
-                tab: Item {
-                    implicitWidth: Math.max(60, control.width / Math.max(1, control.count))
-                    implicitHeight: 42
+                Rectangle {
+                    width: tabBar.width / Math.max(1, pagesModel.count)
+                    height: tabBar.height
+                    radius: 11
+                    color: index === sheet.currentTab ? Theme.accent : "transparent"
+                    Behavior on color { ColorAnimation { duration: 120 } }
 
-                    Rectangle {
+                    Text {
+                        anchors.centerIn: parent
+                        width: parent.width - 8
+                        text: qsTranslate("ConfigPagesModel", title)
+                        elide: Text.ElideRight
+                        horizontalAlignment: Text.AlignHCenter
+                        color: index === sheet.currentTab ? "white" : Theme.inkDim
+                        font.pixelSize: TextMetrics.normalSize * 0.95
+                        font.bold: index === sheet.currentTab
+                    }
+
+                    MouseArea {
                         anchors.fill: parent
-                        anchors.margins: 3
-                        radius: 11
-                        color: styleData.selected ? Theme.accent : "transparent"
-                        Behavior on color { ColorAnimation { duration: 120 } }
-
-                        Text {
-                            anchors.centerIn: parent
-                            width: parent.width - 8
-                            text: styleData.title
-                            elide: Text.ElideRight
-                            horizontalAlignment: Text.AlignHCenter
-                            color: styleData.selected ? "white" : Theme.inkDim
-                            font.pixelSize: TextMetrics.normalSize * 0.95
-                            font.bold: styleData.selected
-                        }
+                        onClicked: sheet.currentTab = index
                     }
                 }
             }
+        }
+
+        Item {
+            id: pages
+            anchors {
+                left: parent.left; right: parent.right
+                top: tabBar.bottom; bottom: parent.bottom
+                margins: 8
+            }
 
             Repeater {
-                id: rep
-                model: tabView.model
+                model: pagesModel
 
-                Tab {
-                    title: qsTranslate("ConfigPagesModel", rep.model.get(index).title)
+                Loader {
+                    anchors.fill: parent
+                    visible: index === sheet.currentTab
                     source: file
                 }
             }
