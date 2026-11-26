@@ -1,23 +1,40 @@
 import QtQuick 2.0
-import QtQuick.Controls 1.0
+import Firebird.UIComponents 1.0
 
-/* A push button with a symbol instead of text.
- * ToolButton and <img/> in Label don't size correctly,
- * so do it manually.
- * With QQC2, button icons have a better default size
- * and it can also be specified explicitly. */
-
-Button {
+/* Rounded gradient-free badge button with a white glyph. */
+Item {
+    id: root
     property alias icon: image.source
+    property color tint: Theme.accent
+    property bool pressed: mouseArea.pressed
+    signal clicked()
 
-    implicitHeight: TextMetrics.normalSize * 2.5
+    implicitHeight: Math.max(36, TextMetrics.normalSize * 2.5)
     implicitWidth: implicitHeight
+
+    Rectangle {
+        anchors.fill: parent
+        anchors.margins: 1
+        radius: width * 0.3
+        color: root.tint
+        opacity: root.pressed ? 0.7 : 1.0
+        Behavior on opacity { NumberAnimation { duration: 100 } }
+    }
 
     Image {
         id: image
-        height: Math.round(parent.height * 0.6)
+        width: Math.round(parent.height * 0.52)
+        height: width
+        sourceSize: Qt.size(128, 128)
         anchors.centerIn: parent
-
         fillMode: Image.PreserveAspectFit
+        smooth: true
+        mipmap: true
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: root.clicked()
     }
 }

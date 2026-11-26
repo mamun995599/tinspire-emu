@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import Firebird.UIComponents 1.0
 
 Rectangle {
     id: rectangle3
@@ -39,7 +40,7 @@ Rectangle {
         id: rectangle1
         width: 8
         height: 20
-        color: "#222233"
+        color: Theme.keyBase
         radius: 0
         anchors.verticalCenterOffset: 5
         anchors.horizontalCenterOffset: 0
@@ -47,14 +48,14 @@ Rectangle {
         anchors.verticalCenter: parent.verticalCenter
         anchors.horizontalCenter: parent.horizontalCenter
         border.width: 1
-        border.color: "#888"
+        border.color: Theme.keyBorder
     }
 
     Rectangle {
         id: rectangle2
         width: 8
         height: 18
-        color: "#222233"
+        color: Theme.keyBase
         radius: 0
         anchors.verticalCenterOffset: 5
         anchors.horizontalCenterOffset: 0
@@ -69,7 +70,7 @@ Rectangle {
         y: -2
         width: 25
         height: 13
-        color: "#68cce0"
+        color: Theme.legend
         text: "aa"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
@@ -84,7 +85,7 @@ Rectangle {
         y: -2
         width: 25
         height: 13
-        color: "#68cce0"
+        color: Theme.legend
         text: "bb"
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter

@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
+import Firebird.UIComponents 1.0
 
 FBLabel {
     signal clicked
@@ -12,7 +13,7 @@ FBLabel {
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         onClicked: parent.clicked()
     }
-    
-    color: "white"
+
+    color: Theme.accent
     font.bold: true
 }

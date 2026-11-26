@@ -1,4 +1,5 @@
 import Firebird.Emu 1.0
+import Firebird.UIComponents 1.0
 
 import QtQuick 2.3
 import QtQuick.Layouts 1.0
@@ -7,7 +8,7 @@ Rectangle {
     id: rectangle1
     width: 265
     height: 340
-    color: "#444"
+    color: Theme.keypadBg
 
     ColumnLayout {
         id: columnLayout1
@@ -43,7 +44,7 @@ Rectangle {
                 y: -11
                 width: 33
                 height: 11
-                color: "#68cce0"
+                color: Theme.legend
                 text: "save"
                 horizontalAlignment: Text.AlignHCenter
                 font.pixelSize: 9
@@ -107,7 +108,7 @@ Rectangle {
                 y: -11
                 width: 33
                 height: 11
-                color: "#68cce0"
+                color: Theme.legend
                 text: "+page"
                 horizontalAlignment: Text.AlignHCenter
                 font.pixelSize: 9
@@ -139,7 +140,7 @@ Rectangle {
     Touchpad {
         id: touchpad1
         width: gridLayout1.width
-        border.color: "#abc2c7"
+        border.color: Theme.padRing
         anchors.bottom: rectangle3.bottom
         anchors.bottomMargin: 6
         z: 2
@@ -176,7 +177,7 @@ Rectangle {
                 y: -11
                 width: 33
                 height: 11
-                color: "#68cce0"
+                color: Theme.legend
                 text: "CAPS"
                 anchors.bottom: parent.top
                 horizontalAlignment: Text.AlignHCenter
@@ -204,7 +205,7 @@ Rectangle {
                 y: -11
                 width: 33
                 height: 11
-                color: "#68cce0"
+                color: Theme.legend
                 text: "sto→"
                 anchors.bottom: parent.top
                 horizontalAlignment: Text.AlignHCenter
@@ -287,7 +288,7 @@ Rectangle {
                 y: -11
                 width: 33
                 height: 11
-                color: "#68cce0"
+                color: Theme.legend
                 text: "capture"
                 anchors.bottom: parent.top
                 horizontalAlignment: Text.AlignHCenter
@@ -309,7 +310,7 @@ Rectangle {
                 y: -11
                 width: 33
                 height: 11
-                color: "#68cce0"
+                color: Theme.legend
                 text: "ans"
                 anchors.bottom: parent.top
                 horizontalAlignment: Text.AlignHCenter
@@ -324,16 +325,16 @@ Rectangle {
     NBigButton {
         id: nButton7
         width: 33
-        color: "#68cce0"
+        color: Theme.legend
         text: "ctrl"
         anchors.top: gridLayout1.top
         anchors.topMargin: 0
         keymap_id: 86
         anchors.left: parent.left
         anchors.leftMargin: 5
-        active_color: "#cce"
-        back_color: "#bbf"
-        font_color: "#222"
+        active_color: "#7CC4F8"
+        back_color: Theme.legend
+        font_color: "#FFFFFF"
     }
 
     NBigButton {
@@ -353,7 +354,7 @@ Rectangle {
             y: -11
             width: 33
             height: 11
-            color: "#68cce0"
+            color: Theme.legend
             text: "clear"
             horizontalAlignment: Text.AlignHCenter
             font.pixelSize: 9
@@ -601,7 +602,7 @@ Rectangle {
             y: -12
             width: 50
             height: 11
-            color: "#68cce0"
+            color: Theme.legend
             text: "≈"
             font.bold: true
             anchors.bottom: nButton8.top
@@ -615,7 +616,7 @@ Rectangle {
     Rectangle {
         id: rectangle3
         height: 90
-        color: "#111111"
+        color: Theme.keypadTop
         anchors.top: parent.top
         anchors.topMargin: 0
         anchors.left: parent.left
@@ -624,5 +625,18 @@ Rectangle {
         anchors.rightMargin: 0
         z: 1
     }
-}
 
+    // Blue side rails of the real calculator
+    Rectangle {
+        z: 10
+        anchors { left: parent.left; top: parent.top; bottom: parent.bottom }
+        width: 3
+        color: Theme.legend
+    }
+    Rectangle {
+        z: 10
+        anchors { right: parent.right; top: parent.top; bottom: parent.bottom }
+        width: 3
+        color: Theme.legend
+    }
+}

@@ -12,6 +12,22 @@
         <file>resources/icons/Actions-media-playback-pause-icon.png</file>
         <file>resources/icons/Actions-network-connect-icon.png</file>
         <file>resources/icons/Actions-network-disconnect-icon.png</file>
+        <file>resources/icons/ic_play.png</file>
+        <file>resources/icons/ic_reset.png</file>
+        <file>resources/icons/ic_resume.png</file>
+        <file>resources/icons/ic_save.png</file>
+        <file>resources/icons/ic_settings.png</file>
+        <file>resources/icons/ic_monitor.png</file>
+        <file>resources/icons/ic_chip.png</file>
+        <file>resources/icons/ic_bolt.png</file>
+        <file>resources/icons/ic_transfer.png</file>
+        <file>resources/icons/ic_bug.png</file>
+        <file>resources/icons/ic_filenew.png</file>
+        <file>resources/icons/ic_folder.png</file>
+        <file>resources/icons/ic_info.png</file>
+        <file>resources/icons/ic_speed.png</file>
+        <file>resources/icons/ic_chevron.png</file>
+        <file>resources/icons/ic_power.png</file>
         <file>resources/tinspire-emu.png</file>
         <file>resources/icons/system-suspend-hibernate.png</file>
         <file>resources/icons/system-suspend.png</file>
@@ -60,6 +76,7 @@
         <file>qml/Firebird/UIComponents/VerticalSwipeBar.qml</file>
         <file>qml/FlashDialog.qml</file>
         <file>qml/Firebird/UIComponents/IconButton.qml</file>
+        <file>qml/Firebird/UIComponents/Theme.qml</file>
     </qresource>
     <qresource prefix="/i18n">
         <file>i18n/de_DE.qm</file>

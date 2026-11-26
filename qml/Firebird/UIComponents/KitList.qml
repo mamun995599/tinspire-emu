@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.0
 import Firebird.Emu 1.0
+import Firebird.UIComponents 1.0
 
 Rectangle {
     property alias currentItem: listView.currentItem
@@ -11,9 +12,11 @@ Rectangle {
         id: paletteActive
     }
 
-    color: paletteActive.base
+    color: Theme.card
+    radius: 12
+    clip: true
     border {
-        color: paletteActive.alternateBase
+        color: Theme.line
         width: 1
     }
 
@@ -33,7 +36,7 @@ Rectangle {
             highlightResizeDuration: 0
 
             highlight: Rectangle {
-                color: paletteActive.highlight
+                color: "#E1EAFF"
                 anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
             }
 
@@ -58,7 +61,7 @@ Rectangle {
                         bottom: parent.bottom
                     }
 
-                    color: paletteActive.shadow
+                    color: Theme.line
                     height: 1
                 }
 
@@ -109,7 +112,7 @@ Rectangle {
             section.criteria: ViewSection.FullString
             section.delegate: Rectangle {
                 anchors.horizontalCenter: parent.horizontalCenter
-                color: paletteActive.window
+                color: Theme.paper
                 height: label.implicitHeight + 4
                 width: listView.width - listView.anchors.margins
 
@@ -129,7 +132,7 @@ Rectangle {
                         bottom: parent.bottom
                     }
 
-                    color: paletteActive.shadow
+                    color: Theme.line
                     height: 1
                 }
             }

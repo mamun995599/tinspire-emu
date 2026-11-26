@@ -3,6 +3,7 @@ import QtQuick.Controls 1.0
 import QtQuick.Dialogs 1.0
 import QtQuick.Layouts 1.0
 import Firebird.Emu 1.0
+import Firebird.UIComponents 1.0
 
 RowLayout {
     property string filePath: ""
@@ -63,7 +64,8 @@ RowLayout {
     // if the open file dialog doesn't allow creation, to open a file creation dialog.
     IconButton {
         visible: showCreateButton || (!selectExisting && !Emu.saveDialogSupported())
-        icon: "qrc:/icons/resources/icons/document-new.png"
+        icon: "qrc:/icons/resources/icons/ic_filenew.png"
+        tint: Theme.teal
 
         Loader {
             id: createDialogLoader
@@ -89,7 +91,8 @@ RowLayout {
     }
 
     IconButton {
-        icon: "qrc:/icons/resources/icons/document-edit.png"
+        icon: "qrc:/icons/resources/icons/ic_folder.png"
+        tint: Theme.accent
         onClicked: {
             dialogLoader.active = true;
             dialogLoader.item.visible = true;

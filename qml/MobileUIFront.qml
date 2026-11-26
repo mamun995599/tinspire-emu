@@ -17,23 +17,35 @@ GridLayout {
 
     VerticalSwipeBar {
         id: swipeBar
-        Layout.preferredHeight: screen.implicitHeight
+        Layout.preferredHeight: bezel.implicitHeight
 
         onClicked: listView.openDrawer()
+        direction: 1
     }
 
-    EmuScreen {
-        id: screen
-        implicitHeight: (mobileui.width - swipeBar.implicitWidth) / 320 * 240
+    // Screen bezel
+    Rectangle {
+        id: bezel
+        implicitHeight: (mobileui.width - swipeBar.implicitWidth - 12) / 320 * 240 + 12
         Layout.fillWidth: true
+        color: "#07090D"
+        radius: 6
+        border.width: 1
+        border.color: Theme.outline
 
-        focus: true
+        EmuScreen {
+            id: screen
+            anchors.fill: parent
+            anchors.margins: 6
 
-        Timer {
-            interval: 35
-            running: true
-            repeat: true
-            onTriggered: screen.update()
+            focus: true
+
+            Timer {
+                interval: 35
+                running: true
+                repeat: true
+                onTriggered: screen.update()
+            }
         }
     }
 
@@ -107,7 +119,7 @@ GridLayout {
 
         /* Screen centered on the remaining space on the left */
         PropertyChanges {
-            target: screen
+            target: bezel
             Layout.fillHeight: true
             Layout.fillWidth: true
         }

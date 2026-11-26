@@ -9,46 +9,107 @@ Item {
     Layout.fillHeight: true
     Layout.fillWidth: true
 
-    TabView {
-        id: tabView
+    Rectangle {
+        anchors.fill: parent
+        color: Theme.paper
+    }
+
+    Rectangle {
+        id: header
+        anchors { left: parent.left; right: swipeBar.left; top: parent.top }
+        height: 56
+        color: "transparent"
+
+        Row {
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.left
+            anchors.leftMargin: 16
+            spacing: 10
+
+            IconButton {
+                width: 34
+                height: 34
+                icon: "qrc:/icons/resources/icons/ic_settings.png"
+                tint: Theme.accent
+                onClicked: listView.openDrawer()
+            }
+
+            FBLabel {
+                anchors.verticalCenter: parent.verticalCenter
+                text: qsTr("Configuration")
+                font.pixelSize: TextMetrics.title2Size * 1.1
+                font.bold: true
+            }
+        }
+    }
+
+    Rectangle {
+        id: sheet
         anchors {
             left: parent.left
             right: swipeBar.left
-            top: parent.top
+            top: header.bottom
             bottom: autoSaveLabel.top
-            bottomMargin: 2
+            leftMargin: 10
+            rightMargin: 6
+            bottomMargin: 6
         }
+        radius: 16
+        color: Theme.card
+        border.color: Theme.line
+        border.width: 1
+        clip: true
 
-        property var model: ConfigPagesModel {}
+        TabView {
+            id: tabView
+            anchors.fill: parent
+            anchors.margins: 6
 
-    /*    style: TabViewStyle {
-            tab: Rectangle {
-                color: styleData.selected ? "darkgrey" :"lightgrey"
+            property var model: ConfigPagesModel {}
 
-                implicitWidth: tabView.width / model.count
-                implicitHeight: title.contentHeight + 10
+            style: TabViewStyle {
+                frameOverlap: 0
+                tabOverlap: 0
+                tabsAlignment: Qt.AlignHCenter
 
-                FBLabel {
-                    id: title
-                    anchors.fill: parent
-                    text: styleData.title
-                    font.pixelSize: TextMetrics.title1Size
-                    horizontalAlignment: Text.AlignHCenter
-                    verticalAlignment: Text.AlignVCenter
-                    elide: Text.ElideRight
-                    color: styleData.selected ? "white" : "black"
+                frame: Rectangle { color: "transparent" }
+                tabBar: Rectangle {
+                    color: "transparent"
+                }
+
+                tab: Item {
+                    implicitWidth: Math.max(60, control.width / Math.max(1, control.count))
+                    implicitHeight: 42
+
+                    Rectangle {
+                        anchors.fill: parent
+                        anchors.margins: 3
+                        radius: 11
+                        color: styleData.selected ? Theme.accent : "transparent"
+                        Behavior on color { ColorAnimation { duration: 120 } }
+
+                        Text {
+                            anchors.centerIn: parent
+                            width: parent.width - 8
+                            text: styleData.title
+                            elide: Text.ElideRight
+                            horizontalAlignment: Text.AlignHCenter
+                            color: styleData.selected ? "white" : Theme.inkDim
+                            font.pixelSize: TextMetrics.normalSize * 0.95
+                            font.bold: styleData.selected
+                        }
+                    }
                 }
             }
-            frame: Rectangle { color: "#eeeeee" }
-        }*/
 
-        Repeater {
-            id: rep
-            model: tabView.model
+            Repeater {
+                id: rep
+                model: tabView.model
 
-            Tab {
-                title: qsTranslate("ConfigPagesModel", rep.model.get(index).title)
-                source: file
+                Tab {
+                    title: qsTranslate("ConfigPagesModel", rep.model.get(index).title)
+                    source: file
+                }
             }
         }
     }
@@ -58,18 +119,23 @@ Item {
 
         anchors {
             left: parent.left
-            leftMargin: 2
+            leftMargin: 14
             right: swipeBar.left
             bottom: parent.bottom
+            bottomMargin: 6
         }
 
         text: qsTr("Changes are saved automatically")
         font.italic: true
-        color: "grey"
+        font.pixelSize: TextMetrics.normalSize * 0.9
+        color: Theme.inkDim
     }
 
     VerticalSwipeBar {
         id: swipeBar
+
+        direction: -1
+        tint: Theme.inkDim
 
         anchors {
             right: parent.right

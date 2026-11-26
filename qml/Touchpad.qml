@@ -1,14 +1,15 @@
 import QtQuick 2.0
 import Firebird.Emu 1.0
+import Firebird.UIComponents 1.0
 
 Rectangle {
     id: rectangle2
     width: 100
     height: 70
-    color: "#222222"
-    radius: 10
-    border.width: 2
-    border.color: "#eeeeee"
+    color: "#141517"
+    radius: 22
+    border.width: 3
+    border.color: Theme.keyBorder
 
     Rectangle {
         id: rectangle1
@@ -17,11 +18,25 @@ Rectangle {
         width: 35
         height: 35
         color: "#00000000"
-        radius: 8
-        border.color: "#ffffff"
+        radius: 10
+        border.width: 2
+        border.color: "#8E9299"
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.verticalCenter: parent.verticalCenter
     }
+
+    Rectangle {
+        // Soft top light on the pad
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 2 }
+        height: parent.height * 0.45
+        radius: parent.radius
+        color: "#08FFFFFF"
+    }
+
+    Text { text: "\u25B2"; color: "#9AA0A8"; font.pixelSize: 9; anchors.horizontalCenter: parent.horizontalCenter; y: 4 }
+    Text { text: "\u25BC"; color: "#9AA0A8"; font.pixelSize: 9; anchors.horizontalCenter: parent.horizontalCenter; y: parent.height - height - 4 }
+    Text { text: "\u25C0"; color: "#9AA0A8"; font.pixelSize: 9; anchors.verticalCenter: parent.verticalCenter; x: 6 }
+    Text { text: "\u25B6"; color: "#9AA0A8"; font.pixelSize: 9; anchors.verticalCenter: parent.verticalCenter; x: parent.width - width - 6 }
 
     Rectangle {
         id: highlight
@@ -29,7 +44,7 @@ Rectangle {
         y: 0
         width: 10
         height: 10
-        color: "#b3edf200"
+        color: "#B34ADE80"
         radius: 10
         visible: false
     }
@@ -56,7 +71,7 @@ Rectangle {
                 {
                     highlight.x = x*width - highlight.width/2;
                     highlight.y = y*height - highlight.height/2;
-                    highlight.color = down ? "#b3edf200" : "#b38080ff";
+                    highlight.color = down ? "#B34ADE80" : "#B35B8CFF";
                 }
 
                 highlight.visible = contact || down;

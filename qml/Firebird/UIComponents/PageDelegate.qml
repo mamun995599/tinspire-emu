@@ -23,18 +23,24 @@ Item {
         anchors.fill: parent
         anchors.margins: 10
 
-        Image {
-            id: icon
+        Rectangle {
+            Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+            Layout.preferredWidth: Math.min(parent.width, parent.height * 0.6)
+            Layout.preferredHeight: Layout.preferredWidth
+            radius: width * 0.28
+            color: Theme.accent
 
-            Layout.alignment: Qt.AlignHCenter| Qt.AlignVCenter
-            Layout.maximumWidth: parent.width
-            Layout.maximumHeight: parent.height
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-
-            fillMode: Image.PreserveAspectFit
-            antialiasing: true
-            smooth: true
+            Image {
+                id: icon
+                anchors.centerIn: parent
+                width: parent.width * 0.55
+                height: width
+                sourceSize: Qt.size(128, 128)
+                fillMode: Image.PreserveAspectFit
+                antialiasing: true
+                smooth: true
+                mipmap: true
+            }
         }
 
         FBLabel {

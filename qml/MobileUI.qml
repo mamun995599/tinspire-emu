@@ -10,6 +10,7 @@ ApplicationWindow {
     id: app
     title: "Ti Nspire CX CAS Emulator"
     visible: true
+    color: Theme.bg
 
     property bool closeAfterSuspend: false
     property bool ignoreSuspendOnClose: false
@@ -119,7 +120,7 @@ ApplicationWindow {
         z: 1
 
         anchors.bottom: parent.bottom
-        anchors.bottomMargin: 61
+        anchors.bottomMargin: 72
         anchors.horizontalCenter: parent.horizontalCenter
     }
 

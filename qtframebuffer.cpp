@@ -5,6 +5,9 @@
 
 #include <QImage>
 #include <QPainter>
+#include <QQuickWindow>
+#include <QSGSimpleTextureNode>
+#include <QSGTexture>
 #include <QGuiApplication>
 #include <QScreen>
 
@@ -76,12 +79,116 @@ void paintFramebuffer(QPainter *p)
 }
 
 QMLFramebuffer::QMLFramebuffer(QQuickItem *parent)
- : QQuickPaintedItem(parent)
+ : QQuickItem(parent)
 {
+    setFlag(ItemHasContents, true);
     installEventFilter(&qt_keypad_bridge);
 }
 
-void QMLFramebuffer::paint(QPainter *p)
+QSGNode *QMLFramebuffer::updatePaintNode(QSGNode *oldNode, UpdatePaintNodeData *)
 {
-    paintFramebuffer(p);
+    QSGSimpleTextureNode *node = static_cast<QSGSimpleTextureNode *>(oldNode);
+    QQuickWindow *win = window();
+
+    if(!win || width() < 1 || height() < 1)
+    {
+        delete node;
+        return nullptr;
+    }
+
+    const qreal dpr = win->devicePixelRatio();
+
+    // Largest 4:3 rectangle that fits into the item, in *physical* pixels.
+    const int itemPw = qMax(1, qRound(width() * dpr));
+    const int itemPh = qMax(1, qRound(height() * dpr));
+    int pw = itemPw;
+    int ph = qRound(pw * 240.0 / 320.0);
+    if(ph > itemPh)
+    {
+        ph = itemPh;
+        pw = qRound(ph * 320.0 / 240.0);
+    }
+    pw = qMax(1, pw);
+    ph = qMax(1, ph);
+
+    // Centered, aligned to the physical pixel grid so that no half pixels appear.
+    const QRectF rect(qRound((itemPw - pw) / 2.0) / dpr,
+                      qRound((itemPh - ph) / 2.0) / dpr,
+                      pw / dpr, ph / dpr);
+
+    const bool lcdOff = hdq1w.lcd_contrast == 0;
+    const bool debugger = in_debugger;
+    const quint64 key = (quint64(pw) << 40) | (quint64(ph) << 16)
+                        | (lcdOff ? 1u : 0u) | (debugger ? 2u : 0u) | (emulate_cx ? 4u : 0u);
+
+    QImage source;
+    if(!lcdOff)
+        source = renderFramebuffer().convertToFormat(QImage::Format_RGB32);
+
+    // Nothing changed since the last frame? Then keep the old texture, saves a lot of battery.
+    if(node && key == m_lastKey && !debugger && (lcdOff || source == m_lastSource))
+    {
+        node->setRect(rect);
+        return node;
+    }
+
+    QImage out;
+    if(lcdOff)
+    {
+        out = QImage(pw, ph, QImage::Format_RGB32);
+        out.fill(emulate_cx ? Qt::black : Qt::white);
+        QPainter p(&out);
+        QFont f = p.font();
+        f.setPixelSize(qMax(8, ph / 14));
+        p.setFont(f);
+        p.setPen(emulate_cx ? Qt::white : Qt::black);
+        p.drawText(out.rect(), Qt::AlignCenter, QObject::tr("LCD turned off"));
+    }
+    else
+    {
+        if(pw >= 320)
+        {
+            // Integer part of the zoom with nearest-neighbour -> perfectly crisp pixels.
+            const int k = qBound(1, pw / 320, 6);
+            out = (k == 1) ? source : source.scaled(320 * k, 240 * k, Qt::IgnoreAspectRatio, Qt::FastTransformation);
+        }
+        else
+            out = source.scaled(pw, ph, Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+
+        if(debugger)
+        {
+            QPainter p(&out);
+            p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+            p.fillRect(out.rect(), QColor(30, 30, 30, 150));
+            QFont f = p.font();
+            f.setPixelSize(qMax(8, out.height() / 14));
+            p.setFont(f);
+            p.setPen(Qt::white);
+            p.drawText(out.rect(), Qt::AlignCenter, QObject::tr("In debugger"));
+        }
+    }
+
+    QSGTexture *texture = win->createTextureFromImage(out, QQuickWindow::TextureIsOpaque);
+    if(!texture)
+    {
+        delete node;
+        return nullptr;
+    }
+
+    if(!node)
+    {
+        node = new QSGSimpleTextureNode();
+        node->setOwnsTexture(true);
+    }
+
+    texture->setFiltering(QSGTexture::Linear);
+    texture->setMipmapFiltering(QSGTexture::None);
+    node->setTexture(texture);     // deletes the previous texture (owned)
+    node->setFiltering(QSGTexture::Linear);
+    node->setRect(rect);
+
+    m_lastKey = key;
+    m_lastSource = source;
+
+    return node;
 }

@@ -1,0 +1,79 @@
+name: Build for Android
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          submodules: 'recursive'
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v5
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@40fd30fb8d7440372e1316f5d1809ec01dcd3699 # v4
+
+      - uses: nttld/setup-ndk@ed92fe6cadad69be94a966a7ee3271275e62f779 # v1
+        id: setup-ndk
+        with:
+          # Newer doesn't work with Qt 5.15: https://bugreports.qt.io/browse/QTBUG-104580
+          ndk-version: r21
+          add-to-path: false
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@48d3ad6db93f3627c8ee7a0454bc6f3744f7e730 # v4
+        with:
+          version: '5.15.2'
+          host: 'linux'
+          target: 'android'
+          arch: 'android'
+          cache: true
+
+      - name: Build firebird
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+        run: |
+          mkdir build
+          cd build
+          qmake .. ANDROID_ABIS="arm64-v8a armeabi-v7a"
+          make -j4 apk_install_target
+
+      # "platforms;android-33" currently points to an "android-33-ext4" platform, but the "-ext4"
+      # suffix breaks androiddeployqt which uses the last component as "androidCompileSdkVersion".
+      # By using android-32 as platform this is worked around. It'll be installed automatically.
+      - name: Pack APK
+        env:
+          ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_NDK_ROOT: ${{ steps.setup-ndk.outputs.ndk-path }}
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PWD: ${{ secrets.ANDROID_KEYSTORE_PWD }}
+        run: |
+          cd build
+          if [ -n "$ANDROID_KEYSTORE_PWD" ]; then
+            echo "$ANDROID_KEYSTORE" | base64 -d > keystore.jks
+            androiddeployqt --android-platform android-32 --input android-tinspire-emu-deployment-settings.json --output android-build --apk tinspire-emu.apk --sign keystore.jks firebirdemugh --storepass "$ANDROID_KEYSTORE_PWD"
+          else
+            androiddeployqt --android-platform android-32 --input android-tinspire-emu-deployment-settings.json --output android-build --apk tinspire-emu.apk
+          fi
+
+      - name: Upload zip
+        uses: actions/upload-artifact@v7
+        with:
+            name: tinspire-emu-android
+            path: build/tinspire-emu.apk
+            if-no-files-found: error

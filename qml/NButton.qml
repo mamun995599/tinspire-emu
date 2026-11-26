@@ -1,10 +1,14 @@
 import QtQuick 2.0
 import Firebird.Emu 1.0
+import Firebird.UIComponents 1.0
 
 Rectangle {
-    property string active_color: "#555"
-    property string back_color: "#223"
+    property string active_color: Theme.keyActive
+    property string back_color: Theme.keyBase
     property string font_color: "#fff"
+    property string edge_color: Theme.keyBorder
+    property real fontScale: 0.55
+    property bool boldText: true
     property alias text: label.text
     property bool active: pressed || mouseArea.containsMouse
     property bool pressed: false
@@ -14,9 +18,9 @@ Rectangle {
 
     signal clicked()
 
-    border.width: active ? 2 : 1
-    border.color: "#888"
-    radius: 4
+    border.width: 1
+    border.color: active ? "#8FD0FF" : edge_color
+    radius: 6
     color: active ? active_color : back_color
 
     onPressedChanged: {
@@ -37,14 +41,32 @@ Rectangle {
         }
     }
 
+    // Key depth: dark edge below the key
+    Rectangle {
+        z: -1
+        y: active ? 0 : 1
+        width: parent.width
+        height: parent.height
+        radius: parent.radius
+        color: "#000000"
+    }
+
+    // Dome shading: light top edge, darker lower part
+    Rectangle {
+        anchors { left: parent.left; right: parent.right; top: parent.top; margins: 1 }
+        height: parent.height * 0.4
+        radius: parent.radius
+        color: active ? "#10FFFFFF" : "#08FFFFFF"
+    }
+
     Text {
         id: label
         text: "Foo"
         anchors.fill: parent
         anchors.centerIn: parent
-        font.pixelSize: height*0.55
+        font.pixelSize: height*fontScale
         color: font_color
-        font.bold: true
+        font.bold: boldText
         // Workaround: Text.AutoText doesn't seem to work for properties (?)
         textFormat: text.indexOf(">") == -1 ? Text.PlainText : Text.RichText
         verticalAlignment: Text.AlignVCenter
