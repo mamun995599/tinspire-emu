@@ -11,3 +11,4 @@ VerticalSwipeBar 1.0 VerticalSwipeBar.qml
 singleton TextMetrics 1.0 TextMetrics.qml
 singleton Theme 1.0 Theme.qml
 IconButton 1.0 IconButton.qml
+KitItem 1.0 KitItem.qml
