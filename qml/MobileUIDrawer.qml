@@ -1,3 +1,10 @@
+import QtQuick 2.0
+import QtQuick.Dialogs 1.1
+import QtQuick.Layouts 1.1
+
+import Firebird.Emu 1.0
+import Firebird.UIComponents 1.0
+
 Rectangle {
     color: Theme.bg
 
