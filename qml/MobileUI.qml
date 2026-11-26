@@ -193,7 +193,7 @@ ApplicationWindow {
                 listView.pageX[index] = x;
             }
 
-            width: modelData === "MobileUIDrawer.qml" ? loader.item.implicitWidth : app.width
+            width: modelData === "MobileUIDrawer.qml" ? (loader.item ? loader.item.implicitWidth : Math.min(app.width * 0.85, 320)) : app.width
             height: app.height
 
             Rectangle {
@@ -223,6 +223,27 @@ ApplicationWindow {
                 focus: Math.round(parent.x) == Math.round(listView.contentX);
                 anchors.fill: parent
                 source: modelData
+
+                // Show QML load errors on screen instead of a blank page
+                onStatusChanged: {
+                    if(status === Loader.Error)
+                    {
+                        var c = Qt.createComponent(modelData);
+                        errorText.text = modelData + ":\n" + c.errorString();
+                    }
+                }
+            }
+
+            Text {
+                id: errorText
+                z: 2
+                visible: text !== ""
+                anchors.fill: parent
+                anchors.margins: 8
+                color: "#FF6B6B"
+                wrapMode: Text.Wrap
+                font.pixelSize: 11
+                elide: Text.ElideRight
             }
         }
     }
