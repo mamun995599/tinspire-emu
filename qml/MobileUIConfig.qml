@@ -108,10 +108,33 @@ Item {
             Repeater {
                 model: pagesModel
 
-                Loader {
+                Item {
                     anchors.fill: parent
                     visible: index === sheet.currentTab
-                    source: file
+
+                    Loader {
+                        anchors.fill: parent
+                        source: file
+
+                        // Show load errors on screen instead of an empty page
+                        onStatusChanged: {
+                            if(status === Loader.Error)
+                            {
+                                var c = Qt.createComponent(file);
+                                pageError.text = c.errorString();
+                            }
+                        }
+                    }
+
+                    Text {
+                        id: pageError
+                        visible: text !== ""
+                        anchors.fill: parent
+                        color: "#D32F2F"
+                        wrapMode: Text.Wrap
+                        font.pixelSize: 11
+                        elide: Text.ElideRight
+                    }
                 }
             }
         }
