@@ -387,8 +387,8 @@ Rectangle {
         NAlphaButton { text: "E" ;keymap_id: 45 }
         NAlphaButton { text: "F" ;keymap_id: 44 }
         NAlphaButton { text: "G" ;keymap_id: 39 }
-        NAlphaButton { width: 21; text: "?!▸";keymap_id: 8 }
-        NAlphaButton { width: 21; text: "π▸";keymap_id: 19 }
+        NAlphaButton { width: 21; text: "?!›";keymap_id: 8 }
+        NAlphaButton { width: 21; text: "π›";keymap_id: 19 }
         NAlphaButton { text: "H" ;keymap_id: 38 }
         NAlphaButton { text: "I" ;keymap_id: 37 }
         NAlphaButton { text: "J" ;keymap_id: 35 }
@@ -413,7 +413,7 @@ Rectangle {
         NAlphaButton { text: "S" ;keymap_id: 17 }
         NAlphaButton { id: nAlphaButtonT; text: "T" ;keymap_id: 16 }
         NAlphaButton { id: nAlphaButtonU; text: "U" ;keymap_id: 15 }
-        NAlphaButton { width: 21; text: "↵";keymap_id: 0 }
+        NAlphaButton { width: 21; text: "←";keymap_id: 0 }
         Rectangle {
             color: "#00000000"
             width: 15
