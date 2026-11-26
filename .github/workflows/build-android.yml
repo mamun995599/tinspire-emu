@@ -6,9 +6,20 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write   # needed to publish the GitHub Release
+
 jobs:
   build:
     runs-on: ubuntu-22.04
+    env:
+      # Signing config. Set these 4 repository secrets to sign with your own key
+      # (Settings > Secrets and variables > Actions). If they are missing, a
+      # temporary keystore is generated so the release APK is still signed.
+      KS_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD || 'android' }}
+      KEY_PASS: ${{ secrets.ANDROID_KEY_PASSWORD || secrets.ANDROID_KEYSTORE_PASSWORD || 'android' }}
+      KS_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS || 'tinspireemu' }}
+      KS_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
 
     steps:
 
@@ -99,21 +110,74 @@ jobs:
           cd build
           make -j"$(nproc)"
 
-      # "make apk" runs the install step (copies the .so files into
-      # android-build/libs/<abi>/) and then androiddeployqt with --gradle
-      - name: Build APK
+      # Copies the .so files into android-build/libs/<abi>/
+      - name: Install build targets
         run: |
           cd build
-          make apk
+          make apk_install_target
 
-      - name: Find APK
+      - name: Build debug APK
         run: |
-          echo "Searching for APK..."
-          find build -type f -name "*.apk" -print
+          cd build
+          SETTINGS=$(find . -maxdepth 1 -name 'android-*-deployment-settings.json' | head -n1)
+          "$QT/bin/androiddeployqt" --gradle --android-platform android-32 \
+            --input "$SETTINGS" --output android-build
+          APK=$(find android-build/build/outputs/apk/debug -name '*.apk' | head -n1)
+          mkdir -p ../dist
+          cp "$APK" ../dist/tinspire-emu-debug.apk
 
-      - name: Upload APK
+      - name: Build release APK (unsigned)
+        run: |
+          cd build
+          SETTINGS=$(find . -maxdepth 1 -name 'android-*-deployment-settings.json' | head -n1)
+          "$QT/bin/androiddeployqt" --release --gradle --android-platform android-32 \
+            --input "$SETTINGS" --output android-build
+          APK=$(find android-build/build/outputs/apk/release -name '*.apk' | head -n1)
+          echo "Unsigned release APK: $APK"
+          cp "$APK" "$RUNNER_TEMP/release-unsigned.apk"
+
+      - name: Prepare keystore
+        run: |
+          if [ -n "$KS_BASE64" ]; then
+            echo "Using keystore from repository secrets"
+            echo "$KS_BASE64" | base64 -d > "$RUNNER_TEMP/release.jks"
+          else
+            echo "::warning::No signing secrets set - generating a temporary keystore. Updates signed with a different key cannot be installed over this APK."
+            keytool -genkeypair -keystore "$RUNNER_TEMP/release.jks" \
+              -alias "$KS_ALIAS" -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$KS_PASS" -keypass "$KEY_PASS" \
+              -dname "CN=TiNspire Emu, O=TiNspire, C=BD"
+          fi
+
+      - name: Align and sign release APK
+        run: |
+          BT="$ANDROID_HOME/build-tools/32.0.0"
+          "$BT/zipalign" -p -f 4 "$RUNNER_TEMP/release-unsigned.apk" "$RUNNER_TEMP/release-aligned.apk"
+          "$BT/apksigner" sign \
+            --ks "$RUNNER_TEMP/release.jks" \
+            --ks-key-alias "$KS_ALIAS" \
+            --ks-pass env:KS_PASS \
+            --key-pass env:KEY_PASS \
+            --out dist/tinspire-emu-release.apk \
+            "$RUNNER_TEMP/release-aligned.apk"
+          "$BT/apksigner" verify --print-certs dist/tinspire-emu-release.apk
+          rm -f "$RUNNER_TEMP/release.jks"
+
+      - name: Upload APKs
         uses: actions/upload-artifact@v4
         with:
-          name: tinspire-emu
-          path: build/android-build/build/outputs/apk/**/*.apk
+          name: tinspire-emu-apks
+          path: |
+            dist/tinspire-emu-debug.apk
+            dist/tinspire-emu-release.apk
           if-no-files-found: error
+
+      - name: Publish GitHub Release
+        if: github.event_name == 'push'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Build ${{ github.run_number }}
+          files: |
+            dist/tinspire-emu-debug.apk
+            dist/tinspire-emu-release.apk
