@@ -39,7 +39,6 @@ Item {
                 fillMode: Image.PreserveAspectFit
                 antialiasing: true
                 smooth: true
-                mipmap: true
             }
         }
 

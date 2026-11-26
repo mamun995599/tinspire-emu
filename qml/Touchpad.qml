@@ -35,8 +35,8 @@ Rectangle {
 
     Text { text: "\u25B2"; color: "#9AA0A8"; font.pixelSize: 9; anchors.horizontalCenter: parent.horizontalCenter; y: 4 }
     Text { text: "\u25BC"; color: "#9AA0A8"; font.pixelSize: 9; anchors.horizontalCenter: parent.horizontalCenter; y: parent.height - height - 4 }
-    Text { text: "\u25C0"; color: "#9AA0A8"; font.pixelSize: 9; anchors.verticalCenter: parent.verticalCenter; x: 6 }
-    Text { text: "\u25B6"; color: "#9AA0A8"; font.pixelSize: 9; anchors.verticalCenter: parent.verticalCenter; x: parent.width - width - 6 }
+    Text { text: "\u2039"; color: "#9AA0A8"; font.pixelSize: 16; anchors.verticalCenter: parent.verticalCenter; x: 6 }
+    Text { text: "\u203A"; color: "#9AA0A8"; font.pixelSize: 16; anchors.verticalCenter: parent.verticalCenter; x: parent.width - width - 6 }
 
     Rectangle {
         id: highlight

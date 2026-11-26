@@ -44,7 +44,6 @@ Rectangle {
                 fillMode: Image.PreserveAspectFit
                 antialiasing: true
                 smooth: true
-                mipmap: true
             }
 
             ColumnLayout {

@@ -54,7 +54,6 @@ Item {
             anchors.centerIn: parent
             fillMode: Image.PreserveAspectFit
             smooth: true
-            mipmap: true
         }
     }
 
